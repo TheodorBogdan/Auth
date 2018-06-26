@@ -87,7 +87,7 @@ app.post('/api/v1/login', (request, response) => {
         response.sendStatus(400);
         return;
     }
-    connection.query('select Customer.Claims from Customer where Customer.Email = ? and Customer.Password = ?',
+    connection.query('select Customer.Id,Customer.Claims from Customer where Customer.Email = ? and Customer.Password = ?',
         [request.body.email, request.body.password],
         (err, result) => {
             if (err) {
@@ -95,14 +95,18 @@ app.post('/api/v1/login', (request, response) => {
                 response.sendStatus(400);
             }
             else {
+                var clms = result[0].Claims;
+console.log(clms);
+var id = result[0].Id;
+console.log(id);
                 var claims = {
                     sub: request.body.email,
                     iis: issuer,
-                    permissions: result
+                    permissions: clms
                 }
                 jwt.sign({ claims }, secretKey, { expiresIn: '3h' }, (err, token) => {
                     response.json({
-                        token
+                        token,id
                     })
                 })
             }
