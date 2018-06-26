@@ -73,6 +73,18 @@ app.get('/api/v1/activecart/:id',(request, response)=>{
             });
 })
 
+app.put('/api/v1/buycart',(request,response)=>{
+    const sqlQuery = 'update CustomerOrder set CustomerOrder.State = 1 where CustomerOrder.CustomerId = ? and CustomerOrder.State=0;'
+    connection.query(sqlQuery,
+        [request.body.Id],
+    (err,result)=>{
+        if(err){
+            console.log(err)
+            response.sendStatus(400);
+        }
+        response.sendStatus(200);
+    });
+});
 
 const port = process.env.PORT || 9090;
 
